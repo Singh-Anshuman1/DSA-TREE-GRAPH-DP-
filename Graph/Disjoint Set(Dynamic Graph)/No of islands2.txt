@@ -1,0 +1,117 @@
+//{ Driver Code Starts
+// Initial Template for C++
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+// User function Template for C++
+class Solution {
+  public:
+    int findUltiParent(int node,vector<int>&parent)
+    {
+        if(node==parent[node])
+        return node;
+        return parent[node]=findUltiParent(parent[node],parent);
+    }
+    void Union(int u,int v,vector<int>&parent,vector<int>&rank)
+    {
+        int ulti_paren_u=findUltiParent(u,parent);
+        int ulti_paren_v=findUltiParent(v,parent);
+        if(ulti_paren_u==ulti_paren_v)
+        return;
+        if(rank[ulti_paren_u]<rank[ulti_paren_v])
+        {
+        parent[ulti_paren_u]=ulti_paren_v;
+        rank[ulti_paren_v]+=rank[ulti_paren_u];
+        }
+        else if(rank[ulti_paren_u]>rank[ulti_paren_v])
+        {
+        parent[ulti_paren_v]=ulti_paren_u;
+        rank[ulti_paren_u]+=rank[ulti_paren_v];
+        }
+        else
+        {
+            parent[ulti_paren_v]=ulti_paren_u;
+             rank[ulti_paren_u]+=rank[ulti_paren_v];
+            
+        }
+        
+    }
+    bool valid(int n,int m,int row,int col)
+    {
+        return (row>=0&&row<n&&col>=0&&col<m);
+    }
+    vector<int> numOfIslands(int n, int m, vector<vector<int>> &operators) {
+        int size=n*m;
+        vector<int>Ultimate_parent(size+1);
+        for(int i=0;i<=size;i++)
+        Ultimate_parent[i]=i;
+        vector<int>rank(size+1,1);
+        vector<vector<int>>vis(n,vector<int>(m,0));
+        int count=0;
+        vector<int>ans;
+        for(auto it:operators)
+        {
+            int row=it[0];
+            int col=it[1];
+            if(vis[row][col]==1)
+            {
+                ans.push_back(count);
+                continue;
+            }
+            vis[row][col]=1;
+            count++;
+            int drow[]={-1,0,1,0};
+            int dcol[]={0,1,0,-1};
+            for(int i=0;i<4;i++)
+            {
+                int adjrow=row+drow[i];
+                int adjcol=col+dcol[i];
+                if(valid(n,m,adjrow,adjcol)&&vis[adjrow][adjcol]==1)
+                {
+                    int cellNo=row*m+col;
+                    int adjcellNo=adjrow*m+adjcol;
+                    int ulti_parent_u=Ultimate_parent[cellNo];
+                    int ulti_parent_v=Ultimate_parent[adjcellNo];
+                    if( ulti_parent_u!=ulti_parent_v)
+                    {
+                        count--;
+                        Union(cellNo,adjcellNo,Ultimate_parent,rank);
+                    }
+                    
+                }
+            }
+            ans.push_back(count);
+        }
+        return ans;
+    }
+};
+
+
+//{ Driver Code Starts.
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n,m,k; cin>>n>>m>>k;
+        vector<vector<int>> a;
+        
+        for(int i=0; i<k; i++){
+            vector<int> temp;
+            for(int j=0; j<2; j++){
+                int x; cin>>x;
+                temp.push_back(x);
+            }
+            a.push_back(temp);
+        }
+    
+        Solution obj;
+        vector<int> res = obj.numOfIslands(n,m,a);
+        
+        for(auto x : res)cout<<x<<" ";
+        cout<<"\n";
+    }
+}
+
+// } Driver Code Ends

@@ -1,0 +1,40 @@
+#include <vector>
+#include <queue>
+#include <utility>
+using namespace std;
+
+class Solution {
+public:
+    
+    int countPaths(int n, vector<vector<int>>& roads) {
+        vector<pair<long long,long long>> adj[n];
+        for(int i = 0; i < roads.size(); i++) {
+            adj[roads[i][0]].push_back({roads[i][1], roads[i][2]});
+            adj[roads[i][1]].push_back({roads[i][0], roads[i][2]});
+        }
+        priority_queue<pair<long long,long long>, vector<pair<long long,long long>>, greater<pair<long long,long long>>> qu;
+        long long mod = (long long)(1e9+7);
+        vector<long long> dist(n, LLONG_MAX);
+        vector<long long> ways(n, 0);
+        dist[0] = 0;
+        ways[0] = 1;
+        qu.push({0, 0});
+        while(!qu.empty()) {
+            long long dis = qu.top().first;
+            long long node = qu.top().second;
+            qu.pop();
+            for(auto it : adj[node]) {
+                long long adjnode = it.first;
+                long long dis1 = it.second;
+                if(dis + dis1 < dist[adjnode]) {
+                    dist[adjnode] = dis + dis1;
+                    ways[adjnode] = ways[node];
+                    qu.push({dist[adjnode], adjnode});
+                } else if(dis + dis1 == dist[adjnode]) {
+                    ways[adjnode] = (ways[adjnode] + ways[node]) % mod;
+                }
+            }
+        }
+        return ways[n - 1] % mod;
+    }
+};

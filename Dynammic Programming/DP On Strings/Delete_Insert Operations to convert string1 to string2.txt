@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int dynamic(int index1,int index2,string &s1,string &s2,vector<vector<int>>&dp)
+    {
+     if(index1<0||index2<0)
+     return 0;
+     if(dp[index1][index2]!=-1)
+     return dp[index1][index2];
+     if(s1[index1]==s2[index2])
+     return dp[index1][index2]=1+dynamic(index1-1,index2-1,s1,s2,dp);
+     else
+     return dp[index1][index2]=0+max(dynamic(index1-1,index2,s1,s2,dp),dynamic(index1,index2-1,s1,s2,dp));
+    }
+    int minDistance(string word1, string word2) {
+        int n=word1.size();
+        int m=word2.size();
+        vector<vector<int>>dp(n,vector<int>(m,-1));
+        int operations=dynamic(n-1,m-1,word1,word2,dp);
+        int op1=n-operations;
+        int op2=m-operations;
+        return op1+op2;
+        
+    }
+};

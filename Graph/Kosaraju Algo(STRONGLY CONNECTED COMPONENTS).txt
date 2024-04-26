@@ -1,0 +1,104 @@
+//{ Driver Code Starts
+#include<bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution
+{
+	public:
+    void dfs(int node,vector<int>&vis,vector<int>adj[],stack<int>&st)
+    {
+        vis[node]=1;
+        for(auto it:adj[node])
+        {
+            if(!vis[it])
+            dfs(it,vis,adj,st);
+        }
+        st.push(node);
+    }
+     void dfs1(int node,vector<int>&vis,vector<int>adj[])
+    {
+        vis[node]=1;
+        for(auto it:adj[node])
+        {
+            if(!vis[it])
+            dfs1(it,vis,adj);
+        }
+        
+    }
+    int kosaraju(int V, vector<vector<int>>& adj)
+    {
+       stack<int>st;
+       vector<int>vis(V,0);
+       vector<int>adj1[V];
+       for(int i=0;i<V;i++)
+       {
+           for(int j=0;j<adj[i].size();j++)
+           {
+               adj1[i].push_back(adj[i][j]);
+           }
+       }
+       //step 1  Storing the Starting and Fininshing Nodes in stack
+       for(int i=0;i<V;i++)
+       {
+           if(!vis[i])
+           dfs(i,vis,adj1,st);
+       }
+       //step 2 Reversing the graph
+       vector<int>adj2[V];
+       for(int i=0;i<V;i++)
+       {
+       for(auto it:adj1[i])
+       {
+        adj2[it].push_back(i);
+       }
+       }
+       //Step 3 Performing DFS
+       int scc=0;
+       vector<int>vis1(V,0);
+       while(!st.empty())
+       {
+           int i=st.top();
+           st.pop();
+           if(!vis1[i])
+           {
+           dfs1(i,vis1,adj2);
+           scc++;
+           }
+       }
+       return scc;
+       
+    }
+};
+
+//{ Driver Code Starts.
+
+
+int main()
+{
+    
+    int t;
+    cin >> t;
+    while(t--)
+    {
+    	int V, E;
+    	cin >> V >> E;
+
+    	vector<vector<int>> adj(V);
+
+    	for(int i = 0; i < E; i++)
+    	{
+    		int u, v;
+    		cin >> u >> v;
+    		adj[u].push_back(v);
+    	}
+
+    	Solution obj;
+    	cout << obj.kosaraju(V, adj) << "\n";
+    }
+
+    return 0;
+}
+
+
+// } Driver Code Ends

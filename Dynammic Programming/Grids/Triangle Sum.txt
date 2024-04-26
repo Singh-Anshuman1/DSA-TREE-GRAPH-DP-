@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int minimum(vector<vector<int>>& triangle,vector<vector<int>>& dp,int n,int m,int i,int j)
+    {
+    if(i==n-1)
+    return triangle[i][j];
+    if(dp[i][j]!=-1)
+    return dp[i][j];
+    int down=triangle[i][j]+minimum(triangle,dp,n,m,i+1,j);
+    int diagonal=triangle[i][j]+minimum(triangle,dp,n,m,i+1,j+1);
+    return dp[i][j]=min(down,diagonal);
+    }
+    int minimumTotal(vector<vector<int>>& triangle) {
+        int n=triangle.size();
+        int m=triangle[n-1].size();
+        vector<vector<int>>dp(n,vector<int>(m,-1));
+     return minimum(triangle,dp,n,m,0,0);
+        
+        
+    }
+};

@@ -1,0 +1,25 @@
+
+void dfs(int node,vector<int>adj[],int vis[],vector<int>&dfs)
+{
+vis[node]=1;
+dfs.push_back(node);
+for(auto it:adj[node])
+{
+if(!vis[it])
+{
+
+dfs(it,adj,vis,dfs);
+}
+}
+
+}
+
+vector<int>dfs(int v,vector<int>adj[])
+{
+int vis[v]={0};
+int start=0;
+vector<int>dfs;
+dfs(start,adj,vis,dfs);
+return dfs;
+
+}

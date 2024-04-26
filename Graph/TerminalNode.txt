@@ -1,0 +1,52 @@
+//Modifying the code of cycle detection
+//If a node leads to a cycle then it is not a terminal node
+//If a node is part of cycle then it is not a terminal Node
+
+
+class Solution {
+public:
+    bool dfs(int node, vector<int> adj[], vector<int>& vis, vector<int>& pathvis, vector<int>& path1) {
+        vis[node] = 1;
+        pathvis[node] = 1;
+        path1[node] = 0;
+        for (auto it : adj[node]) {
+            if (!vis[it]) {
+                if (dfs(it, adj, vis, pathvis, path1)) {
+                    return true;
+                    path1[node]=0;
+                }
+            } else if (pathvis[it] == 1) {
+                path1[node] = 0;
+                return true;
+            }
+        }
+        pathvis[node] = 0;
+        path1[node] = 1;
+        return false;
+    }
+
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<int> adj[n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < graph[i].size(); j++) {
+                adj[i].push_back(graph[i][j]);
+            }
+        }
+        vector<int> vis(n, 0);
+        vector<int> pathvis(n, 0);
+        vector<int> path1(n, 0);
+        for (int i = 0; i < n; i++) {
+            if (!vis[i]) {
+                dfs(i, adj, vis, pathvis, path1);
+            }
+        }
+        vector<int> ans;
+        for (int i = 0; i < n; i++) {
+            if (path1[i] == 1) {
+                ans.push_back(i);
+            }
+        }
+        return ans;
+    }
+};

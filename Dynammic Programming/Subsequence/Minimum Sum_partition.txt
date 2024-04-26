@@ -1,0 +1,70 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution{
+
+  public:
+	int minDifference(int arr[], int n)  { 
+	    int sum=0;
+	    int min1=1e8;
+	    for(int i=0;i<n;i++)
+	    sum+=arr[i];
+	    // maximum absolute difference can be sum and minimum can be 0
+	    //we will create a similar tabulation dp like the problem for subset sum of target k 
+	    vector<vector<int>>dp(n,vector<int>(sum+1,0));
+	    //base case
+	    for(int i=0;i<n;i++)
+	    dp[i][0]=1;
+	    dp[0][arr[0]]=1;
+	    for(int i=1;i<n;i++)
+	    {
+	        for(int target=1;target<=sum;target++)
+	        {
+	            bool not_take=dp[i-1][target];
+	            bool take=false;
+	            if(target>=arr[i])
+	            take=dp[i-1][target-arr[i]];
+	            dp[i][target]=take | not_take;
+	        }
+	    }
+	    for(int target=0;target<=sum;target++)
+	    {
+	        if(dp[n-1][target])
+	        {
+	            int sum_subset1=target;
+	            int sum_subset2=sum-target;
+	            min1=min(min1,abs(sum_subset1-sum_subset2));
+	        }
+	    }
+	    return min1;
+	} 
+};
+
+
+//{ Driver Code Starts.
+int main() 
+{
+   
+   
+   	int t;
+    cin >> t;
+    while (t--)
+    {
+        int n;
+        cin >> n;
+
+        int a[n];
+        for(int i = 0; i < n; i++)
+        	cin >> a[i];
+
+       
+
+	    Solution ob;
+	    cout << ob.minDifference(a, n) << "\n";
+	     
+    }
+    return 0;
+}
+// } Driver Code Ends

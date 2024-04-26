@@ -1,0 +1,25 @@
+// minimum operations= length of string - length of longest common palindrome subsequence
+
+class Solution {
+public:
+    int dynamic(int index1,int index2,string&s1,string&s2,vector<vector<int>>&dp)
+    {
+        if(index1<0||index2<0)
+        return 0;
+        if(dp[index1][index2]!=-1)
+        return dp[index1][index2];
+        if(s1[index1]==s2[index2])
+        return dp[index1][index2]=1+dynamic(index1-1,index2-1,s1,s2,dp);
+        else
+        return dp[index1][index2]=0+max(dynamic(index1,index2-1,s1,s2,dp),dynamic(index1-1,index2,s1,s2,dp));
+    }
+    int minInsertions(string s) {
+        string rev="";
+        for(auto it:s)
+        rev=it+rev;
+        int n=s.size();
+        vector<vector<int>>dp(n,vector<int>(n,-1));
+        return n-dynamic(n-1,n-1,s,rev,dp);
+        
+    }
+};

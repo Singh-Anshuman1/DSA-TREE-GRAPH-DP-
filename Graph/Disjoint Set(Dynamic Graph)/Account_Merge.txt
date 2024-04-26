@@ -1,0 +1,67 @@
+class Solution {
+public:
+    int Ultimate_parent(int node,vector<int>&parent)
+    {
+        if(node==parent[node])
+        return node;
+        return parent[node]=Ultimate_parent(parent[node],parent);
+        
+    }
+    void Union(int u,int v,vector<int>&parent,vector<int>&rank)
+    {
+        int ulti_parent_u=Ultimate_parent(u,parent);
+        int ulti_parent_v=Ultimate_parent(v,parent);
+        if(ulti_parent_u==ulti_parent_v)
+        return;
+        if(rank[ulti_parent_u]<rank[ulti_parent_v])
+        parent[ulti_parent_u]=ulti_parent_v;
+        else if(rank[ulti_parent_u]>rank[ulti_parent_v])
+        parent[ulti_parent_v]=ulti_parent_u;
+        else
+        {
+         parent[ulti_parent_v]=ulti_parent_u;
+         rank[ulti_parent_u]++;
+        }
+    }
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        int n=accounts.size();
+        vector<int>rank(n,0);
+        vector<int>Ulti_parent(n,0);
+        for(int i=0;i<n;i++)
+        Ulti_parent[i]=i;
+        
+        unordered_map<string,int>mapMailNode;
+        for(int i=0;i<accounts.size();i++)
+        {
+            for(int j=1;j<accounts[i].size();j++)
+            {
+                string mail=accounts[i][j];
+                if(mapMailNode.find(mail)==mapMailNode.end())
+                mapMailNode[mail]=i;
+                else
+                Union(mapMailNode[mail],i,Ulti_parent,rank);
+            }
+        }
+        vector<string>MergedMail[n];
+        for(auto it:mapMailNode)
+        {
+            string mail1=it.first;
+            int node=Ulti_parent[it.second];
+            MergedMail[node].push_back(mail1);
+        }
+        vector<vector<string>>ans;
+        for(int i=0;i<n;i++)
+        {
+        if(MergedMail[i].size()==0)
+        continue;
+        sort(MergedMail[i].begin(),MergedMail[i].end());
+        vector<string>temp;
+        temp.push_back(accounts[i][0]); // Name 
+        for(auto it:MergedMail[i])
+        temp.push_back(it);
+        ans.push_back(temp);
+        }
+        return ans;
+
+    }
+};

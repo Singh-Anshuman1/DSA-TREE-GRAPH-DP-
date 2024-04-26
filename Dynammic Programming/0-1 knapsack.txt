@@ -1,0 +1,28 @@
+class Solution
+{
+    public:
+    //Function to return max value that can be put in knapsack of capacity W.
+    int dynamic(vector<vector<int>>&dp,int Wt,int n,int wt[], int val[])
+    {
+        if(n==0)
+        {
+            if(wt[0]<=Wt)
+            return val[0];
+            else
+            return 0;
+        }
+        if(dp[n][Wt]!=-1)
+        return dp[n][Wt];
+        int not_take=0+dynamic(dp,Wt,n-1,wt,val);
+        int take=INT_MIN;
+        if(wt[n]<=Wt)
+        take=val[n]+dynamic(dp,Wt-wt[n],n-1,wt,val);
+        return dp[n][Wt]=max(take,not_take);
+    }
+    int knapSack(int W, int wt[], int val[], int n) 
+    { 
+       vector<vector<int>>dp(n,vector<int>(W+1,-1));
+       return dynamic(dp,W,n-1,wt,val);
+       
+    }
+};

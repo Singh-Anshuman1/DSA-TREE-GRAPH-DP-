@@ -1,0 +1,46 @@
+class Solution {
+public:
+    bool check(vector<int>adj[],vector<int>&colour,int start)
+    {
+        queue<int>q;
+        q.push(start);
+        colour[start]=0;
+        while(!q.empty())
+        {
+            int node=q.front();
+            q.pop();
+            for(auto it : adj[node])
+            {
+                if(colour[it]==-1)
+                {
+                    colour[it]=!colour[node];
+                    q.push(it);
+                }
+                else if(colour[it]==colour[node])
+                return false;
+            }
+        }
+        return true;
+
+    }
+    bool isBipartite(vector<vector<int>>& graph) {
+        vector<int>adj[graph.size()];
+        for(int i=0;i<graph.size();i++)
+        {
+            for(int j=0;j<graph[i].size();j++)
+            {
+                adj[i].push_back(graph[i][j]);
+                adj[graph[i][j]].push_back(i);
+            }
+        }
+        vector<int>colour(graph.size(),-1);
+        for(int i=0;i<graph.size();i++)
+        {
+            if(colour[i]==-1&&check(adj,colour,i)==false)
+            return false;
+        }
+        return true;
+        
+        
+    }
+};

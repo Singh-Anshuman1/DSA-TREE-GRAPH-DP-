@@ -1,0 +1,29 @@
+class Solution{
+    const int mod=1e9+7;
+	public:
+	int dynamic(int arr[], int n, int sum,vector<vector<int>>&dp)
+	{
+	    
+	    if(n==0){
+	        if(sum==0 and arr[0]==0)    return 2;
+	        if(sum==0 or sum==arr[0])   return 1;
+	        return 0;
+	    }
+	    if(dp[n][sum]!=-1)
+	    return dp[n][sum];
+	    int not_take=dynamic(arr,n-1,sum,dp);
+	    int take=0;
+	    if(arr[n]<=sum)
+	    take=dynamic(arr,n-1,sum-arr[n],dp);
+	    return dp[n][sum]=(take+not_take)%mod;
+	    
+	    
+	}
+	int perfectSum(int arr[], int n, int sum)
+	{
+	    vector<vector<int>>dp(n,vector<int>(sum+1,-1));
+	    return dynamic(arr,n-1,sum,dp);
+        
+	}
+	  
+};

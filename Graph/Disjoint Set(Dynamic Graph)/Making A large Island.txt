@@ -1,0 +1,113 @@
+class Solution {
+public:
+    int findParent(int node,vector<int>&parent)
+    {
+        if(node==parent[node])
+        return node;
+        return parent[node]=findParent(parent[node],parent);
+    }
+    void Unionby_size(int u,int v,vector<int>&size,vector<int>&parent)
+    {
+        int ulti_parent_u=findParent(u,parent);
+        int ulti_parent_v=findParent(v,parent);
+        if(ulti_parent_u==ulti_parent_v)
+        return ;
+        if(size[ulti_parent_u]<size[ulti_parent_v])
+        {
+            parent[ulti_parent_u]=ulti_parent_v;
+            size[ulti_parent_v]+=size[ulti_parent_u];
+        }
+        else
+        {
+            parent[ulti_parent_v]=ulti_parent_u;
+            size[ulti_parent_u]+=size[ulti_parent_v];
+
+        }
+    }
+    bool isValid(int n,int row,int col)
+    {
+        return (row>=0 && row<n && col>=0 && col<n);
+    }
+    int largestIsland(vector<vector<int>>& grid) {
+        int n=grid.size();
+        vector<int>ulti_parent(n*n+1);
+        vector<int>size1(n*n+1);
+        for(int i=0;i<=n*n;i++)
+        {
+        ulti_parent[i]=i;
+        size1[i]=1;
+        }
+        
+        int dr[]={-1,0,1,0};
+        int dc[]={0,-1,0,1};
+        
+        //step 1 - connections all islands group
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(grid[i][j]==0)
+                continue;
+                for(int k=0;k<4;k++)
+                {
+                    int nrow=dr[k]+i;
+                    int ncol=dc[k]+j;
+                    if(isValid(n,nrow,ncol) && grid[nrow][ncol]==1)
+                    {
+                    int cell=i*n+j;
+                    int adjcell=nrow*n+ncol;
+                    Unionby_size(cell,adjcell,size1,ulti_parent);
+                    }
+
+                }
+            }
+        }
+        int max1=0;
+        // step 2 - converting 0 into 1
+         for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(grid[i][j]==1)
+                continue;
+                set<int>components;
+                 for(int k=0;k<4;k++)
+                {
+                    
+                    int nrow=dr[k]+i;
+                    int ncol=dc[k]+j;
+                    if(isValid(n,nrow,ncol) && grid[nrow][ncol]==1)
+                    {
+                    
+                    int adjcell=nrow*n+ncol;
+                    components.insert(findParent(adjcell,ulti_parent));
+                    }
+                }
+                int s=0;
+                for(auto it:components)
+                s=s+size1[it];
+                max1=max(max1,s+1);
+
+
+
+            }
+        }
+        //edge case if all are already 1
+        int flag=1;
+          for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(grid[i][j]==0)
+                flag=0;
+            }
+        }
+        if(flag==1)
+        return n*n;
+
+        return max1;
+        
+
+        
+    }
+};

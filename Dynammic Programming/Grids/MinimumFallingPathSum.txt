@@ -1,0 +1,38 @@
+#include <vector>
+#include <climits>
+using namespace std;
+
+class Solution {
+public:
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+        if (n == 0) return 0;
+        int m = matrix[0].size();
+        
+        // Initialize memoization vector
+        vector<vector<int>> memo(n, vector<int>(m, INT_MAX));
+        
+        int minSum = INT_MAX;
+        for (int i = 0; i < m; ++i) {
+            minSum = min(minSum, helper(matrix, memo, n, m, 0, i));
+        }
+        return minSum;
+    }
+
+    int helper(vector<vector<int>>& matrix, vector<vector<int>>& memo, int n, int m, int row, int col) {
+        if (row == n - 1) return matrix[row][col];
+        
+        // If result is already computed, return memoized value
+        if (memo[row][col] != INT_MAX)
+            return memo[row][col];
+        
+        int left = (col > 0) ? helper(matrix, memo, n, m, row + 1, col - 1) : INT_MAX;
+        int down = helper(matrix, memo, n, m, row + 1, col);
+        int right = (col < m - 1) ? helper(matrix, memo, n, m, row + 1, col + 1) : INT_MAX;
+
+        // Store computed result in memoization vector
+        memo[row][col] = matrix[row][col] + min(left, min(down, right));
+        
+        return memo[row][col];
+    }
+};

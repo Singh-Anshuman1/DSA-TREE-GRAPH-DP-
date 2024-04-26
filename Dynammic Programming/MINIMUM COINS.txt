@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int dynamic(vector<vector<int>>&dp,vector<int>& coins,int index,int target)
+    {
+        //base case
+        if(index==0)
+        {
+            if(target%coins[0]==0)
+            return target/coins[0];
+            else
+            return INT_MAX;
+        }
+        if(dp[index][target]!=-1)  //memoization
+        return dp[index][target];
+        long long int not_take=0+dynamic(dp,coins,index-1,target);
+        long long int take = LLONG_MAX;  // Initialize take as long long int max
+        if(target>=coins[index])
+       
+    take = 1LL + dynamic(dp, coins, index, target - coins[index]);  // Use 1LL to ensure consistent type;
+        return dp[index][target]=min(take,not_take);
+
+    }
+    int coinChange(vector<int>& coins, int amount) {
+        int n=coins.size();
+        vector<vector<int>>dp(n,vector<int>(amount+1,-1));
+        long long int ans=dynamic(dp,coins,n-1,amount);
+        if(ans>=1e9)
+        return -1;
+        else
+        return ans;
+    }
+};

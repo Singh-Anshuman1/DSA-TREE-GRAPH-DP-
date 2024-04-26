@@ -1,0 +1,24 @@
+class Solution{
+  public:
+    int dynamic(int price[],int index,vector<vector<int>>&dp,int length)
+    {
+        if(index==0)
+        {
+            return length*price[0];
+        }
+        if(dp[index][length]!=-1)
+        return dp[index][length];
+        int not_take=0+dynamic(price,index-1,dp,length);
+        int take=INT_MIN;
+        int len_to_cut=index+1;
+        if(length>=len_to_cut)
+        take=price[index]+dynamic(price,index,dp,length-len_to_cut);
+        return dp[index][length]=max(take,not_take);
+        
+    }
+    int cutRod(int price[], int n) {
+        vector<vector<int>>dp(n,vector<int>(n+1,-1));
+        return dynamic(price,n-1,dp,n);
+        
+    }
+};

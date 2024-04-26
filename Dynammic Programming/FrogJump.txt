@@ -1,0 +1,19 @@
+#include <bits/stdc++.h> 
+int min1(int start,vector<int>&height,vector<int>&dp)
+{
+if(start==0)
+return 0;
+if(dp[start]!=-1) // memorization
+return dp[start];
+int jump1=abs(height[start]-height[start-1])+min1(start-1,height,dp);
+int jump2=INT_MAX;
+if(start>1)
+ jump2=abs(height[start]-height[start-2])+min1(start-2,height,dp);
+return dp[start]=min(jump1,jump2);
+}
+int frogJump(int n, vector<int> &heights)
+{
+   vector<int>dp(n+1,-1);
+   return min1(n-1,heights,dp);
+
+}
